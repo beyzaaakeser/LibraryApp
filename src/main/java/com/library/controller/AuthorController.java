@@ -31,7 +31,7 @@ public class AuthorController {
     public ResponseEntity<String> createAuthor(@Valid @RequestBody AuthorRequest authorRequest){
         authorService.saveAuthor(authorRequest);
         String str = "Author saved successfully";
-        return new ResponseEntity<>(str, HttpStatus.CREATED) // created
+        return new ResponseEntity<>(str, HttpStatus.CREATED); // created
     }
 
     @GetMapping("/{id}")
