@@ -2,11 +2,14 @@ package com.library.controller;
 
 import com.library.domain.dto.AuthorDTO;
 import com.library.domain.dto.request.AuthorRequest;
+import com.library.exception.ResourceNotFountException;
+import com.library.exception.message.ErrorMessage;
 import com.library.service.AuthorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +31,7 @@ public class AuthorController {
     public ResponseEntity<String> createAuthor(@Valid @RequestBody AuthorRequest authorRequest){
         authorService.saveAuthor(authorRequest);
         String str = "Author saved successfully";
-        return ResponseEntity.ok(str);
+        return new ResponseEntity<>(str, HttpStatus.CREATED) // created
     }
 
     @GetMapping("/{id}")
@@ -73,9 +76,13 @@ public class AuthorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAuthor(@PathVariable("id") Long id){
-        authorService.removeAuthor(id);
-        String str = "Author deleted successfully";
-        return ResponseEntity.ok(str);
+        try {
+            authorService.removeAuthor(id);
+            String str = "Author deleted successfully";
+            return ResponseEntity.ok(str);
+        } catch (Exception e) {
+            throw new ResourceNotFountException(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION);
+        }
 
     }
 
